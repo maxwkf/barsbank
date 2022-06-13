@@ -1,0 +1,30 @@
+{
+    "name": "maxwkf/barsbank",
+    "version": "dev-main",
+    "description": "Package Supporting Barsbank API",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+      {
+        "name": "Max Wong",
+        "email": "maxwkf@gmail.com"
+      }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Maxwkf\\Barsbank\\": "src/",
+            "Maxwkf\\Barsbank\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Maxwkf\\Barsbank\\BarsbankServiceProvider"
+            ]
+        }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^7.0"
+    }
+}
