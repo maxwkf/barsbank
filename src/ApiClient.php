@@ -3,29 +3,20 @@
 namespace Maxwkf\Barsbank;
 use GuzzleHttp\Client;
 
-
+/**
+ * @method string getApiKey()
+ * @method ApiClient setApiKey()
+ */
 class ApiClient
 {
 
-    // 'park_id'           => $parkId,
-    //         'date_from'         => $startdate,
-    //         'date_to'           => $enddate,
-    //         'holiday_type'      => 1,
-    //         'number_adults'     => $adults,
-    //         'number_children'   => $children,
-    //         'number_infants'    => $infants,
-    //         'number_pets'       => $pets,
-    //         'days_either_side'  => 0,
-
     const ENDPOINT = 'https://dynamic.barsbank.com/api/';
-    const KEY = 'nde6geh38dhejwkfd838jwnnw3u8nwke9j34'; //coast_view_key
-    const PARKID = '2';
 
     public function __construct(
-        
-        public $parkId = null,
-        public $dateFrom= null,
-        public $dateTo= null,
+        public $apiKey,
+        public $parkId,
+        public $dateFrom = null,
+        public $dateTo = null,
         public $holidayType = 1,
         public $numberAdults = 0,
         public $numberChildren = 0,
@@ -34,16 +25,26 @@ class ApiClient
         public $daysEitherSide = 0
     )
     {
-        
-    }
-
-    public function connect() {
-        $client = new Client(['headers' => [
-            'key' => self::KEY,
+        $this->client = new Client(['headers' => [
+            'key' => $this->apiKey,
             'Content-Type' => 'application/x-www-form-urlencoded'
         ]]);
+    }
+
+    public function __call($method, $args)
+    {
+        if (str_starts_with($method, 'get')) {
+            return lcfirst(substr($method, 3));
+        } else if (str_starts_with($method, 'set')) {
+            $this->{lcfirst(substr($method, 3))} = $args[0];
+            return $this;
+        }
+    }
+    
+
+    public function getAvailabilities() {
         
-        $res = $client->request('POST', self::ENDPOINT . 'getAvailability', [
+        $response = $this->client->request('POST', self::ENDPOINT . 'getAvailability', [
             'form_params' => [
                 'park_id' => $this->parkId,
                 'date_from' => $this->dateFrom,
@@ -56,12 +57,8 @@ class ApiClient
                 'days_either_side' => $this->daysEitherSide,
             ]
         ]);
-        echo $res->getStatusCode();
-        // "200"
-        echo $res->getHeader('content-type')[0];
-        // 'application/json; charset=utf8'
-        echo $res->getBody();
-        // {"type":"User"...'
+
+        return json_decode($response->getBody()->getContents());
     }
 
     
