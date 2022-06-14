@@ -1,5 +1,5 @@
 <?php
-namespace Maxwkf\Barsbank;
+namespace Maxwkf\Barsbank\Tests;
 use Maxwkf\Barsbank\BarsbankServiceProvider;
 
 

@@ -10,6 +10,7 @@ use GuzzleHttp\Client;
 class ApiClient
 {
 
+    // https://dynamic.barsbank.com/api-docs
     const ENDPOINT = 'https://dynamic.barsbank.com/api/';
 
     public function __construct(
@@ -55,6 +56,16 @@ class ApiClient
                 'number_infants' => $this->numberInfants,
                 'number_pets' => $this->numberPets,
                 'days_either_side' => $this->daysEitherSide,
+            ]
+        ]);
+
+        return json_decode($response->getBody()->getContents());
+    }
+
+    public function getValidStays() {
+        $response = $this->client->request('POST', self::ENDPOINT . 'getValidStays', [
+            'form_params' => [
+                'park_id' => $this->parkId
             ]
         ]);
 

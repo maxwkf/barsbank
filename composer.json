@@ -17,6 +17,11 @@
             "Maxwkf\\Barsbank\\Tests\\": "tests/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Maxwkf\\Barsbank\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
