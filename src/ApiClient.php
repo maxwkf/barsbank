@@ -15,15 +15,7 @@ class ApiClient
 
     public function __construct(
         public $apiKey,
-        public $parkId,
-        public $dateFrom = null,
-        public $dateTo = null,
-        public $holidayType = 1,
-        public $numberAdults = 0,
-        public $numberChildren = 0,
-        public $numberInfants = 0,
-        public $numberPets = 0,
-        public $daysEitherSide = 0
+        public $parkId
     )
     {
         $this->client = new Client(['headers' => [
@@ -50,16 +42,30 @@ class ApiClient
                 'park_id' => $this->parkId,
                 'date_from' => $this->dateFrom,
                 'date_to' => $this->dateTo,
-                'holiday_type' => $this->holidayType,
+                'holiday_type' => $this->holidayType ?? 1,
                 'number_adults' => $this->numberAdults,
-                'number_children' => $this->numberChildren,
-                'number_infants' => $this->numberInfants,
-                'number_pets' => $this->numberPets,
-                'days_either_side' => $this->daysEitherSide,
+                'number_children' => $this->numberChildren ?? 0,
+                'number_infants' => $this->numberInfants ?? 0,
+                'number_pets' => $this->numberPets ?? 0,
+                'days_either_side' => $this->daysEitherSide ?? 0,
             ]
         ]);
 
-        return json_decode($response->getBody()->getContents());
+        // dd([
+        //     $response->getStatusCode(),
+        //     $response->getReasonPhrase(),
+        //     $response->getProtocolVersion(),
+        //     $response->getBody(),
+        //     $response->getBody()->getContents(),
+        // ]);
+
+        $content = json_decode($response->getBody()->getContents());
+
+        if (!is_array( $content ) && $content->error == 'No availability has been found') {
+            $content = [];
+        }
+
+        return $content;
     }
 
     public function getValidStays() {
@@ -69,9 +75,76 @@ class ApiClient
             ]
         ]);
 
-        return json_decode($response->getBody()->getContents());
+        if (!is_array( $content ) && $content->error == 'No valid stays has been found') {
+            $content = [];
+        }
+
+        return $content;
     }
 
-    
+    public function getParkAccommodation() {
+        $response = $this->client->request('POST', self::ENDPOINT . 'getValidStays', [
+            'form_params' => [
+                'park_id' => $this->parkId
+            ]
+        ]);
+        
+        if (!is_array( $content ) && $content->error == 'No park accommodation has been found') {
+            $content = [];
+        }
+
+        return $content;
+    }
+
+    public function getTourValidStays() {
+        $response = $this->client->request('POST', self::ENDPOINT . 'getTourValidStays', [
+            'form_params' => [
+                'park_id' => $this->parkId
+            ]
+        ]);
+        
+        $content = json_decode($response->getBody()->getContents());
+
+        if (!is_array( $content ) && $content->error == 'No tour valid stays has been found') {
+            $content = [];
+        }
+
+        return $content;
+    }
+
+
+    public function getExtras() {
+        
+        $response = $this->client->request('POST', self::ENDPOINT . 'getExtras', [
+            'form_params' => [
+                'park_id' => $this->parkId,
+                'product_id' => $this->productId,
+                'date_from' => $this->dateFrom,
+                'date_to' => $this->dateTo,
+                'holiday_type' => $this->holidayType ?? 1,
+                'availability_token' => $this->availabilityToken,
+            ]
+        ]);
+
+        $content = json_decode($response->getBody()->getContents());
+
+        if (!is_array( $content ) && $content->error == 'No extras has been found') {
+            $content = [];
+        }
+
+        return $content;
+    }
+
+    public function createProvisionalBooking() {
+        $response = $this->client->request('POST', self::ENDPOINT . 'createProvisionalBooking', [
+            'form_params' => [
+                'availability_token' => $this->availabilityToken
+            ]
+        ]);
+
+        $content = json_decode($response->getBody()->getContents());
+
+        return $content;
+    }
 
 }

@@ -31,5 +31,8 @@
     },
     "require-dev": {
         "orchestra/testbench": "^7.0"
+    },
+    "require": {
+        "guzzlehttp/guzzle": "7.4.x-dev"
     }
 }
