@@ -1,6 +1,5 @@
 {
     "name": "maxwkf/barsbank",
-    "version": "dev-main",
     "description": "Package Supporting Barsbank API",
     "type": "library",
     "license": "MIT",
@@ -10,7 +9,6 @@
         "email": "maxwkf@gmail.com"
       }
     ],
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Maxwkf\\Barsbank\\": "src/",
@@ -33,6 +31,6 @@
         "orchestra/testbench": "^7.0"
     },
     "require": {
-        "guzzlehttp/guzzle": "7.4.x-dev"
+        "guzzlehttp/guzzle": "7.4.5"
     }
 }
